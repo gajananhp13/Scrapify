@@ -30,3 +30,32 @@ Scrapify is a modern web scraping tool that combines the power of **Next.js 15**
    ```bash
    git clone https://github.com/yourusername/scrapify.git
    cd scrapify
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   # or
+   pnpm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env` file in the root directory based on `.env.example`:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Then edit `.env` and add your API keys:
+   - **GOOGLE_GENAI_API_KEY**: Get your API key from [Google AI Studio](https://makersuite.google.com/app/apikey)
+   - **UPSTASH_REDIS_REST_URL**: Get from [Upstash Console](https://console.upstash.com/)
+   - **UPSTASH_REDIS_REST_TOKEN**: Get from [Upstash Console](https://console.upstash.com/)
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+   
+   Open [http://localhost:9002](http://localhost:9002) in your browser

@@ -45,11 +45,13 @@ const cardVariants = {
 
 export default function HomePage() {
   const [isVisible, setIsVisible] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const heroRef = useRef<HTMLDivElement>(null);
   const featuresRef = useRef<HTMLDivElement>(null);
   const howItWorksRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
     setIsVisible(true);
 
     const observerOptions = {
@@ -88,25 +90,28 @@ export default function HomePage() {
         <motion.section
           ref={heroRef}
           initial="hidden"
-          animate={isVisible ? "visible" : "hidden"}
+          animate={mounted && isVisible ? "visible" : "hidden"}
           variants={containerVariants}
           className="text-center mb-16 md:mb-24"
         >
           <motion.div variants={itemVariants} className="mb-6">
             <motion.div
-              animate={{
+              animate={mounted ? {
                 y: [0, -10, 0],
-              }}
+              } : { y: 0 }}
               transition={{
                 duration: 3,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
-              className="inline-block"
+              className="relative inline-block"
             >
-              <Bot className="mx-auto h-20 w-20 md:h-24 md:w-24 text-primary mb-6 relative">
+              <div className="relative z-10 flex justify-center">
+                <Bot className="h-20 w-20 md:h-24 md:w-24 text-primary mb-6" />
+              </div>
+              {mounted && (
                 <motion.div
-                  className="absolute inset-0 rounded-full bg-primary/20 blur-xl"
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 rounded-full bg-primary/20 blur-xl pointer-events-none"
                   animate={{
                     scale: [1, 1.2, 1],
                     opacity: [0.5, 0.8, 0.5],
@@ -116,8 +121,12 @@ export default function HomePage() {
                     repeat: Infinity,
                     ease: "easeInOut",
                   }}
+                  style={{
+                    width: '120px',
+                    height: '120px',
+                  }}
                 />
-              </Bot>
+              )}
             </motion.div>
           </motion.div>
 
@@ -162,7 +171,7 @@ export default function HomePage() {
         {/* Stats Display */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={isVisible ? { opacity: 1, y: 0 } : {}}
+          animate={mounted && isVisible ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.6, delay: 0.3 }}
         >
           <StatsDisplay />
@@ -321,17 +330,19 @@ export default function HomePage() {
           className="text-center relative"
         >
           <div className="relative max-w-4xl mx-auto p-12 md:p-16 rounded-2xl bg-gradient-to-br from-primary/10 via-primary/5 to-accent/10 border-2 border-primary/20 backdrop-blur-sm">
-            <motion.div
-              animate={{
-                scale: [1, 1.05, 1],
-              }}
-              transition={{
-                duration: 4,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-              className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl blur-xl"
-            />
+            {mounted && (
+              <motion.div
+                animate={{
+                  scale: [1, 1.05, 1],
+                }}
+                transition={{
+                  duration: 4,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+                className="absolute inset-0 bg-gradient-to-r from-primary/5 to-accent/5 rounded-2xl blur-xl"
+              />
+            )}
             <div className="relative z-10">
               <h2 className="text-3xl md:text-4xl font-bold mb-6 font-headline">
                 Ready to Dive In?

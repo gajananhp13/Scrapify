@@ -12,7 +12,7 @@ interface Stats {
   totalScrapedLinks: number;
 }
 
-function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: number }) {
+function AnimatedCounter({ value, duration = 2 }: { value: number | undefined; duration?: number }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: "-50px" });
@@ -20,9 +20,10 @@ function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: nu
   useEffect(() => {
     if (!isInView) return;
 
+    const safeValue = typeof value === 'number' && !isNaN(value) ? value : 0;
     let startTime: number | null = null;
     const startValue = 0;
-    const endValue = value;
+    const endValue = safeValue;
 
     const animate = (currentTime: number) => {
       if (startTime === null) startTime = currentTime;
@@ -44,9 +45,11 @@ function AnimatedCounter({ value, duration = 2 }: { value: number; duration?: nu
     requestAnimationFrame(animate);
   }, [isInView, value, duration]);
 
+  const displayCount = typeof count === 'number' && !isNaN(count) ? count : 0;
+
   return (
     <span ref={ref} className="tabular-nums">
-      {count.toLocaleString()}
+      {displayCount.toLocaleString()}
     </span>
   );
 }
@@ -60,11 +63,16 @@ export function StatsDisplay() {
     fetch('/api/stats')
       .then(res => res.json())
       .then(data => {
-        setStats(data);
+        // Ensure we have valid numbers, default to 0 if missing or invalid
+        setStats({
+          visitorCount: typeof data.visitorCount === 'number' && !isNaN(data.visitorCount) ? data.visitorCount : 0,
+          totalScrapedLinks: typeof data.totalScrapedLinks === 'number' && !isNaN(data.totalScrapedLinks) ? data.totalScrapedLinks : 0,
+        });
         setIsLoading(false);
       })
       .catch(err => {
         console.error('Error fetching stats:', err);
+        setStats({ visitorCount: 0, totalScrapedLinks: 0 });
         setIsLoading(false);
       });
 
@@ -78,8 +86,14 @@ export function StatsDisplay() {
       })
         .then(res => res.json())
         .then(data => {
-          setStats(data);
-          sessionStorage.setItem('hasVisited', 'true');
+          // Ensure we have valid numbers, default to 0 if missing or invalid
+          if (!data.error) {
+            setStats({
+              visitorCount: typeof data.visitorCount === 'number' && !isNaN(data.visitorCount) ? data.visitorCount : 0,
+              totalScrapedLinks: typeof data.totalScrapedLinks === 'number' && !isNaN(data.totalScrapedLinks) ? data.totalScrapedLinks : 0,
+            });
+            sessionStorage.setItem('hasVisited', 'true');
+          }
         })
         .catch(err => console.error('Error incrementing visitor count:', err));
     }
