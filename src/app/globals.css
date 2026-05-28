@@ -4,77 +4,77 @@
 
 @layer base {
   :root {
-    --background: 0 0% 96.1%; /* Light Gray F5F5F5 */
-    --foreground: 275 10% 10%; /* Dark almost black, slightly desaturated indigo */
+    /* "Glass & Grain" Light Theme */
+    --background: 210 40% 98%; /* Soft cool white */
+    --foreground: 222 47% 11%; /* Deep navy text */
+    
     --card: 0 0% 100%;
-    --card-foreground: 275 10% 10%;
+    --card-foreground: 222 47% 11%;
+    
     --popover: 0 0% 100%;
-    --popover-foreground: 275 10% 10%;
-    --primary: 275 100% 25.3%; /* Deep Indigo 4B0082 */
-    --primary-foreground: 0 0% 98%; /* White-ish text on primary */
-    --secondary: 0 0% 90%; /* Slightly darker gray for secondary elements */
-    --secondary-foreground: 275 10% 10%;
-    --muted: 0 0% 85%; /* Muted gray */
-    --muted-foreground: 0 0% 45.1%;
-    --accent: 51.4 100% 50%; /* Golden Yellow FFD700 */
-    --accent-foreground: 275 100% 15%; /* Dark indigo text on accent */
+    --popover-foreground: 222 47% 11%;
+    
+    --primary: 240 5.9% 10%; /* Almost black */
+    --primary-foreground: 0 0% 98%;
+    
+    --secondary: 240 4.8% 95.9%;
+    --secondary-foreground: 240 5.9% 10%;
+    
+    --muted: 240 4.8% 95.9%;
+    --muted-foreground: 240 3.8% 46.1%;
+    
+    --accent: 240 4.8% 95.9%;
+    --accent-foreground: 240 5.9% 10%;
+    
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 89.8%;
-    --input: 0 0% 89.8%;
-    --ring: 275 100% 50%; /* A vibrant indigo for rings */
-    --chart-1: 12 76% 61%;
-    --chart-2: 173 58% 39%;
-    --chart-3: 197 37% 24%;
-    --chart-4: 43 74% 66%;
-    --chart-5: 27 87% 67%;
-    --radius: 0.5rem;
-
-    /* Sidebar specific variables, can be adjusted or merged if app uses one consistent theme */
-    --sidebar-background: 0 0% 100%; /* White sidebar for light theme */
-    --sidebar-foreground: 275 10% 15%; /* Dark indigo text for sidebar */
-    --sidebar-primary: 275 100% 25.3%; /* Deep Indigo for active/primary items */
-    --sidebar-primary-foreground: 0 0% 98%; /* White text on sidebar primary */
-    --sidebar-accent: 0 0% 94%; /* Lighter gray for hover/accent in sidebar */
-    --sidebar-accent-foreground: 275 100% 25.3%; /* Deep Indigo for text on sidebar accent */
-    --sidebar-border: 0 0% 89.8%;
-    --sidebar-ring: 275 100% 50%;
+    
+    --border: 240 5.9% 90%;
+    --input: 240 5.9% 90%;
+    --ring: 240 5.9% 10%; /* Dark ring */
+    
+    --radius: 0.75rem; /* Larger radius for friendly feel */
+    
+    /* Glow Colors */
+    --glow-cyan: 190 90% 50%;
+    --glow-violet: 260 90% 65%;
+    --glow-amber: 35 90% 60%;
   }
 
   .dark {
-    --background: 275 10% 10%; /* Very dark desaturated indigo */
-    --foreground: 0 0% 96.1%; /* Light Gray text */
-    --card: 275 10% 12%; /* Slightly lighter dark for cards */
-    --card-foreground: 0 0% 96.1%;
-    --popover: 275 10% 8%; /* Darker for popovers */
-    --popover-foreground: 0 0% 96.1%;
-    --primary: 275 80% 60%; /* Lighter, vibrant Indigo for dark mode primary */
-    --primary-foreground: 275 100% 15%; /* Dark indigo text on primary */
-    --secondary: 275 10% 15%; /* Darker secondary */
-    --secondary-foreground: 0 0% 96.1%;
-    --muted: 275 10% 20%; /* Dark muted */
-    --muted-foreground: 0 0% 63.9%;
-    --accent: 51.4 90% 60%; /* Lighter, vibrant yellow for dark mode accent */
-    --accent-foreground: 275 10% 10%; /* Dark text on accent */
+    /* "Luminous Void" Dark Theme */
+    --background: 240 10% 4%; /* #09090b - Very dark, slightly cool gray */
+    --foreground: 0 0% 98%; /* Almost white */
+    
+    --card: 240 10% 7%; /* Slightly lighter than bg */
+    --card-foreground: 0 0% 98%;
+    
+    --popover: 240 10% 7%;
+    --popover-foreground: 0 0% 98%;
+    
+    --primary: 0 0% 98%; /* White primary actions */
+    --primary-foreground: 240 5.9% 10%;
+    
+    --secondary: 240 4% 16%; /* Dark gray secondary */
+    --secondary-foreground: 0 0% 98%;
+    
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%; /* Soft gray text */
+    
+    --accent: 240 4% 16%;
+    --accent-foreground: 0 0% 98%;
+    
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 275 10% 20%;
-    --input: 275 10% 20%;
-    --ring: 275 80% 70%; /* Brighter indigo for rings in dark mode */
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
-
-    --sidebar-background: 275 10% 12%; /* Dark sidebar background */
-    --sidebar-foreground: 0 0% 90%; /* Light gray text for sidebar */
-    --sidebar-primary: 275 80% 60%; /* Lighter Indigo for active/primary */
-    --sidebar-primary-foreground: 275 100% 15%; /* Dark text on sidebar primary */
-    --sidebar-accent: 275 10% 20%; /* Darker accent for hover in sidebar */
-    --sidebar-accent-foreground: 275 80% 60%; /* Lighter Indigo text on sidebar accent */
-    --sidebar-border: 275 10% 20%;
-    --sidebar-ring: 275 80% 70%;
+    
+    --border: 240 4% 16%; /* Subtle borders */
+    --input: 240 4% 16%;
+    --ring: 240 5% 65%;
+    
+    /* Glow Colors for Dark Mode */
+    --glow-cyan: 190 100% 50%;
+    --glow-violet: 270 100% 65%;
+    --glow-amber: 30 100% 50%;
   }
 }
 
@@ -88,58 +88,86 @@
   }
   
   body {
-    @apply bg-background text-foreground;
-    @apply font-body;
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
-  
-  h1, h2, h3, h4, h5, h6 {
-    @apply font-headline;
+
+  /* Slim scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
   }
-  
-  code, pre {
-    @apply font-code;
+  ::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted-foreground/20 rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-muted-foreground/40;
   }
 }
 
 @layer utilities {
-  .animate-float {
-    animation: float 6s ease-in-out infinite;
+  .glass {
+    @apply bg-background/60 backdrop-blur-xl border border-white/10 shadow-lg;
   }
   
-  .animate-pulse-slow {
-    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  .glass-card {
+    @apply bg-gradient-to-br from-white/5 to-white/0 backdrop-blur-md border border-white/10 hover:border-white/20 transition-all duration-300;
   }
-  
-  .animate-gradient {
-    background-size: 200% 200%;
-    animation: gradient 15s ease infinite;
-  }
-  
+
   .text-gradient {
-    background: linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--accent)) 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-white/60;
   }
+
+  .text-gradient-cyan {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-[hsl(var(--glow-cyan))] to-[hsl(var(--glow-violet))];
+  }
+
+  /* Simple noise texture */
+  .noise-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0.03;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  }
+
+  /* Mesh Gradient Background */
+  .mesh-gradient {
+    background: 
+      radial-gradient(circle at 15% 50%, rgba(76, 29, 149, 0.15), transparent 25%),
+      radial-gradient(circle at 85% 30%, rgba(6, 182, 212, 0.15), transparent 25%);
+    filter: blur(60px);
+    z-index: -1;
+  }
+
+  .animate-float-slow {
+    animation: float 8s ease-in-out infinite;
+  }
+  
+  .animate-shimmer {
+    background: linear-gradient(
+      to right,
+      rgba(255, 255, 255, 0) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      rgba(255, 255, 255, 0) 100%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
 }
 
 @keyframes float {
-  0%, 100% {
-    transform: translateY(0px);
-  }
-  50% {
-    transform: translateY(-20px);
-  }
-}
-
-@keyframes gradient {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-20px); }
 }

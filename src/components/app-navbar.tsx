@@ -2,28 +2,28 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Bot, Menu, Home, History, X } from "lucide-react";
+import { Bot, Menu, Home, History, X, Sparkles } from "lucide-react";
 import { ThemeToggleButton } from "./theme-toggle-button";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "./ui/sheet";
 import { cn } from "@/lib/utils";
-import React from "react";
-import { motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const navItems = [
   { href: "/", label: "Home", icon: Home },
-  { href: "/chat", label: "Chat Scraper", icon: Bot },
-  { href: "/history", label: "Scrape History", icon: History },
+  { href: "/chat", label: "Chat", icon: Bot },
+  { href: "/history", label: "History", icon: History },
 ];
 
 export function AppNavbar() {
   const pathname = usePathname();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
-  const [scrolled, setScrolled] = React.useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 10);
+      setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -33,176 +33,85 @@ export function AppNavbar() {
     <motion.header
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: "easeOut" }}
-      className={cn(
-        "sticky top-0 z-50 w-full border-b transition-all duration-300",
-        scrolled
-          ? "bg-background/95 backdrop-blur-md shadow-sm border-border/50"
-          : "bg-background/80 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60"
-      )}
+      transition={{ duration: 0.6, type: "spring", stiffness: 100 }}
+      className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none"
     >
-      <div className="container flex h-16 items-center justify-between">
+      <div 
+        className={cn(
+          "pointer-events-auto flex items-center justify-between p-2 pl-6 pr-3 rounded-full transition-all duration-300 border border-white/10 shadow-lg backdrop-blur-md",
+          scrolled 
+            ? "bg-black/40 w-full max-w-lg shadow-[0_4px_30px_rgba(0,0,0,0.1)]" 
+            : "bg-black/20 w-full max-w-2xl"
+        )}
+      >
         <Link href="/" className="flex items-center gap-2 mr-6 group" onClick={() => setIsMobileMenuOpen(false)}>
-          <motion.div
-            whileHover={{ rotate: [0, -10, 10, -10, 0] }}
-            transition={{ duration: 0.5 }}
-            className="relative"
-          >
-            <Bot className="h-7 w-7 text-primary group-hover:text-primary/80 transition-colors" />
+          <div className="relative flex items-center justify-center">
+            <Bot className="h-5 w-5 text-white/90 group-hover:text-cyan-400 transition-colors" />
             <motion.div
-              className="absolute inset-0 bg-primary/20 rounded-full blur-md"
-              animate={{
-                scale: [1, 1.2, 1],
-                opacity: [0.3, 0.5, 0.3],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
+              className="absolute inset-0 bg-cyan-500/30 rounded-full blur-md"
+              animate={{ opacity: [0, 0.5, 0] }}
+              transition={{ duration: 2, repeat: Infinity }}
             />
-          </motion.div>
-          <motion.span
-            className="font-bold text-xl hidden sm:inline-block bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent"
-            whileHover={{ scale: 1.05 }}
-            transition={{ type: "spring", stiffness: 400 }}
-          >
+          </div>
+          <span className="font-bold text-sm tracking-wide text-white/90 group-hover:text-white transition-colors">
             Scrapify
-          </motion.span>
+          </span>
         </Link>
 
-        <nav className="hidden md:flex items-center space-x-1">
-          {navItems.map((item, index) => {
+        {/* Desktop Nav */}
+        <nav className="hidden md:flex items-center gap-1 bg-white/5 rounded-full p-1 border border-white/5">
+          {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
-              <motion.div
+              <Link
                 key={item.href}
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, delay: index * 0.1 }}
+                href={item.href}
+                className={cn(
+                  "relative px-4 py-1.5 text-xs font-medium transition-all duration-300 rounded-full flex items-center gap-2",
+                  isActive
+                    ? "text-black bg-white shadow-sm"
+                    : "text-white/60 hover:text-white hover:bg-white/10"
+                )}
               >
-                <Link
-                  href={item.href}
-                  className={cn(
-                    "relative px-4 py-2 text-sm font-medium transition-all duration-300 rounded-md group",
-                    isActive
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground"
-                  )}
-                >
-                  <span className="relative z-10">{item.label}</span>
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeTab"
-                      className="absolute inset-0 bg-primary/10 rounded-md"
-                      initial={false}
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                    />
-                  )}
-                  {!isActive && (
-                    <motion.div
-                      className="absolute inset-0 bg-accent/5 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
-                      whileHover={{ scale: 1.05 }}
-                    />
-                  )}
-                </Link>
-              </motion.div>
+                {item.label}
+              </Link>
             );
           })}
         </nav>
 
-        <div className="flex items-center gap-3">
-          <div className="hidden md:block">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.3, delay: 0.3 }}
-            >
-              <ThemeToggleButton />
-            </motion.div>
-          </div>
+        <div className="flex items-center gap-2 pl-2">
+          <ThemeToggleButton />
+          
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
               <SheetTrigger asChild>
-                <motion.div whileTap={{ scale: 0.95 }}>
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                </motion.div>
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-full hover:bg-white/10 text-white/80">
+                  <Menu className="h-4 w-4" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
               </SheetTrigger>
               <SheetContent
-                side="right"
-                className="w-full max-w-xs bg-background/95 backdrop-blur-md p-0 border-l border-border/50"
+                side="top"
+                className="w-full bg-[#09090b]/95 backdrop-blur-xl border-b border-white/10 pt-16 pb-8"
               >
-                <motion.div
-                  initial={{ x: 300, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  exit={{ x: 300, opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  className="flex flex-col h-full"
-                >
-                  <div className="flex items-center justify-between p-4 border-b border-border/50">
-                    <Link
-                      href="/"
-                      className="flex items-center gap-2 group"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Bot className="h-7 w-7 text-primary group-hover:text-primary/80 transition-colors" />
-                      <span className="font-bold text-lg bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-                        Scrapify
-                      </span>
-                    </Link>
-                    <SheetClose asChild>
-                      <motion.div whileTap={{ scale: 0.9 }}>
-                        <Button variant="ghost" size="icon">
-                          <X className="h-6 w-6" />
-                          <span className="sr-only">Close menu</span>
-                        </Button>
-                      </motion.div>
-                    </SheetClose>
-                  </div>
-                  <nav className="flex-1 flex flex-col space-y-1 p-4">
-                    {navItems.map((item, index) => {
-                      const isActive = pathname === item.href;
-                      return (
-                        <motion.div
-                          key={item.href}
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ duration: 0.3, delay: index * 0.1 }}
-                        >
-                          <SheetClose asChild>
-                            <Link
-                              href={item.href}
-                              onClick={() => setIsMobileMenuOpen(false)}
-                              className={cn(
-                                "flex items-center gap-3 rounded-md px-3 py-3 text-base font-medium transition-all duration-300 relative group",
-                                isActive
-                                  ? "bg-primary/10 text-primary"
-                                  : "text-muted-foreground hover:bg-accent/10 hover:text-foreground"
-                              )}
-                            >
-                              <item.icon className="h-5 w-5" />
-                              {item.label}
-                              {isActive && (
-                                <motion.div
-                                  layoutId="mobileActiveTab"
-                                  className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-md"
-                                  initial={false}
-                                  transition={{ type: "spring", stiffness: 380, damping: 30 }}
-                                />
-                              )}
-                            </Link>
-                          </SheetClose>
-                        </motion.div>
-                      );
-                    })}
-                  </nav>
-                  <div className="p-4 border-t border-border/50">
-                    <ThemeToggleButton />
-                  </div>
-                </motion.div>
+                <div className="flex flex-col space-y-4 items-center">
+                  {navItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    return (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className={cn(
+                          "text-lg font-medium transition-colors",
+                          isActive ? "text-cyan-400" : "text-white/60 hover:text-white"
+                        )}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+                </div>
               </SheetContent>
             </Sheet>
           </div>

@@ -65,7 +65,7 @@ export default function ChatPage() {
         <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl animate-pulse-slow" style={{ animationDelay: "1s" }} />
       </div>
 
-      <div className="container mx-auto py-8 md:py-12 relative z-10">
+      <div className="container mx-auto pt-32 pb-8 md:pb-12 relative z-10">
         <motion.header
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}

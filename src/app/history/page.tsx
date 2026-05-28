@@ -48,7 +48,7 @@ export default function HistoryPage() {
   }
 
   return (
-    <div className="container mx-auto">
+    <div className="container mx-auto pt-32 pb-8 md:pb-12">
       <header className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center">
         <div>
             <h1 className="text-3xl md:text-4xl font-bold font-headline text-primary">Scrape History</h1>

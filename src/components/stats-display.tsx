@@ -1,8 +1,7 @@
 "use client"
 
 import { useEffect, useState } from 'react';
-import { Card, CardContent } from '@/components/ui/card';
-import { Users, Link as LinkIcon } from 'lucide-react';
+import { Users, Link as LinkIcon, AlertTriangle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useInView } from 'framer-motion';
 import { useRef } from 'react';
@@ -29,7 +28,6 @@ function AnimatedCounter({ value, duration = 2 }: { value: number | undefined; d
       if (startTime === null) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
       
-      // Easing function for smooth animation
       const easeOutQuart = 1 - Math.pow(1 - progress, 4);
       const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutQuart);
       
@@ -57,13 +55,15 @@ function AnimatedCounter({ value, duration = 2 }: { value: number | undefined; d
 export function StatsDisplay() {
   const [stats, setStats] = useState<Stats>({ visitorCount: 0, totalScrapedLinks: 0 });
   const [isLoading, setIsLoading] = useState(true);
+  const [warning, setWarning] = useState<string | null>(null);
 
   useEffect(() => {
-    // Fetch current stats
     fetch('/api/stats')
       .then(res => res.json())
       .then(data => {
-        // Ensure we have valid numbers, default to 0 if missing or invalid
+        if (data.warning) {
+          setWarning(data.warning);
+        }
         setStats({
           visitorCount: typeof data.visitorCount === 'number' && !isNaN(data.visitorCount) ? data.visitorCount : 0,
           totalScrapedLinks: typeof data.totalScrapedLinks === 'number' && !isNaN(data.totalScrapedLinks) ? data.totalScrapedLinks : 0,
@@ -76,7 +76,6 @@ export function StatsDisplay() {
         setIsLoading(false);
       });
 
-    // Increment visitor count (only once per session)
     const hasVisited = sessionStorage.getItem('hasVisited');
     if (!hasVisited) {
       fetch('/api/stats', {
@@ -86,7 +85,6 @@ export function StatsDisplay() {
       })
         .then(res => res.json())
         .then(data => {
-          // Ensure we have valid numbers, default to 0 if missing or invalid
           if (!data.error) {
             setStats({
               visitorCount: typeof data.visitorCount === 'number' && !isNaN(data.visitorCount) ? data.visitorCount : 0,
@@ -101,82 +99,63 @@ export function StatsDisplay() {
 
   if (isLoading) {
     return (
-      <div className="grid md:grid-cols-2 gap-4 mb-8">
-        <Card>
-          <CardContent className="pt-6">
-            <div className="h-16 bg-muted animate-pulse rounded" />
-          </CardContent>
-        </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <div className="h-16 bg-muted animate-pulse rounded" />
-          </CardContent>
-        </Card>
+      <div className="flex items-center justify-around py-8 px-4">
+        <div className="space-y-2">
+           <div className="h-8 w-24 bg-white/10 animate-pulse rounded" />
+           <div className="h-4 w-16 bg-white/5 animate-pulse rounded" />
+        </div>
+        <div className="h-12 w-px bg-white/10" />
+        <div className="space-y-2">
+           <div className="h-8 w-24 bg-white/10 animate-pulse rounded" />
+           <div className="h-4 w-16 bg-white/5 animate-pulse rounded" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="grid md:grid-cols-2 gap-4 md:gap-6 mb-8">
-      <motion.div
-        initial={{ opacity: 0, x: -30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.1 }}
-      >
-        <Card className="border-primary/20 hover:border-primary/40 transition-all duration-300 hover:shadow-lg hover:shadow-primary/10 group cursor-pointer transform hover:-translate-y-1 bg-card/50 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Total Visitors</p>
-                <motion.p
-                  className="text-3xl md:text-4xl font-bold text-primary mt-2"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.3 }}
-                >
-                  <AnimatedCounter value={stats.visitorCount} />
-                </motion.p>
-              </div>
-              <motion.div
-                whileHover={{ scale: 1.1, rotate: [0, -10, 10, -10, 0] }}
-                transition={{ duration: 0.5 }}
-              >
-                <Users className="h-12 w-12 md:h-16 md:w-16 text-primary/50 group-hover:text-primary/70 transition-colors" />
-              </motion.div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+    <div className="w-full">
+      {warning && (
+        <div className="mx-4 mt-4 p-3 border border-amber-500/30 bg-amber-500/10 rounded-md text-xs text-amber-500 flex items-center justify-center">
+          <AlertTriangle className="h-4 w-4 mr-2 flex-shrink-0" />
+          <span>Stats Not Configured: {warning}</span>
+        </div>
+      )}
+      <div className="flex flex-col md:flex-row items-center justify-around py-8 px-6 gap-8 md:gap-0">
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="flex flex-col items-center text-center group"
+        >
+          <div className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-2 font-mono tracking-tight">
+            <AnimatedCounter value={stats.visitorCount} />
+          </div>
+          <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-cyan-400 transition-colors uppercase tracking-widest">
+            <Users className="h-4 w-4 mr-2" />
+            Total Visitors
+          </div>
+        </motion.div>
 
-      <motion.div
-        initial={{ opacity: 0, x: 30 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ duration: 0.6, delay: 0.2 }}
-      >
-        <Card className="border-accent/20 hover:border-accent/40 transition-all duration-300 hover:shadow-lg hover:shadow-accent/10 group cursor-pointer transform hover:-translate-y-1 bg-card/50 backdrop-blur-sm">
-          <CardContent className="pt-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-muted-foreground mb-2">Scraped Links</p>
-                <motion.p
-                  className="text-3xl md:text-4xl font-bold text-accent mt-2"
-                  initial={{ scale: 0.8 }}
-                  animate={{ scale: 1 }}
-                  transition={{ duration: 0.5, delay: 0.4 }}
-                >
-                  <AnimatedCounter value={stats.totalScrapedLinks} />
-                </motion.p>
-              </div>
-              <motion.div
-                whileHover={{ scale: 1.1, rotate: [0, -10, 10, -10, 0] }}
-                transition={{ duration: 0.5 }}
-              >
-                <LinkIcon className="h-12 w-12 md:h-16 md:w-16 text-accent/50 group-hover:text-accent/70 transition-colors" />
-              </motion.div>
-            </div>
-          </CardContent>
-        </Card>
-      </motion.div>
+        <div className="hidden md:block w-px h-16 bg-gradient-to-b from-transparent via-white/10 to-transparent" />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+          className="flex flex-col items-center text-center group"
+        >
+          <div className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-white/60 mb-2 font-mono tracking-tight">
+            <AnimatedCounter value={stats.totalScrapedLinks} />
+          </div>
+          <div className="flex items-center text-sm font-medium text-muted-foreground group-hover:text-violet-400 transition-colors uppercase tracking-widest">
+            <LinkIcon className="h-4 w-4 mr-2" />
+            Scraped Links
+          </div>
+        </motion.div>
+      </div>
     </div>
   );
 }

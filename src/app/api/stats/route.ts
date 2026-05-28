@@ -51,6 +51,7 @@ export async function GET() {
         visitorCount: 0,
         totalScrapedLinks: 0,
         lastUpdated: new Date().toISOString(),
+        warning: 'Redis not configured. Please set UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN environment variables in Vercel.',
       });
     }
     
