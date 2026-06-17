@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Bot, Menu, Home, History, X, Sparkles } from "lucide-react";
-import { ThemeToggleButton } from "./theme-toggle-button";
 import { Button } from "./ui/button";
 import { Sheet, SheetContent, SheetTrigger, SheetClose } from "./ui/sheet";
 import { cn } from "@/lib/utils";
@@ -80,7 +79,6 @@ export function AppNavbar() {
         </nav>
 
         <div className="flex items-center gap-2 pl-2">
-          <ThemeToggleButton />
           
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>

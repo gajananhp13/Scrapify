@@ -1,296 +1,287 @@
 "use client";
+import { Bot, FileJson, Zap, Cpu, Database } from "lucide-react";
+import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-import { Sparkles, Globe, FileJson, Terminal, Cpu, ArrowRight } from "lucide-react";
+function useMounted() {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => { setMounted(true); }, []);
+  return mounted;
+}
+
+function Particles({ count = 20 }: { count?: number }) {
+  return (
+    <div className="absolute inset-0 pointer-events-none">
+      {Array.from({ length: count }).map((_, i) => (
+        <motion.div
+          key={i}
+          className="absolute w-1 h-1 rounded-full bg-white/20"
+          style={{
+            left: `${Math.random() * 100}%`,
+            top: `${Math.random() * 100}%`,
+          }}
+          initial={{ opacity: 0, scale: 0 }}
+          animate={{
+            opacity: [0, 1, 0],
+            scale: [0, 1, 0],
+            y: [0, -30, 0],
+          }}
+          transition={{
+            duration: 3 + Math.random() * 4,
+            repeat: Infinity,
+            delay: Math.random() * 5,
+            ease: "easeInOut",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
+function FlowLine({ delay = 0 }: { delay?: number }) {
+  return (
+    <div className="relative w-16 md:w-24 h-px">
+      <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/20 via-violet-500/20 to-emerald-500/20" />
+      <motion.div
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-2 h-2 bg-cyan-400 rounded-full blur-sm"
+        initial={{ left: "0%" }}
+        animate={{ left: "100%" }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          delay,
+          ease: "linear",
+        }}
+      />
+      <motion.div
+        className="absolute left-0 top-1/2 -translate-y-1/2 w-6 h-px bg-gradient-to-r from-cyan-400 via-violet-400 to-emerald-400"
+        initial={{ left: "0%", opacity: 0 }}
+        animate={{ left: "100%", opacity: [0, 1, 0] }}
+        transition={{
+          duration: 2,
+          repeat: Infinity,
+          delay: delay + 0.3,
+          ease: "linear",
+        }}
+      />
+    </div>
+  );
+}
+
+function StageCircle({
+  icon: Icon,
+  color,
+  label,
+  desc,
+  delay,
+  glowColor,
+}: {
+  icon: React.ElementType;
+  color: string;
+  label: string;
+  desc: string;
+  delay: number;
+  glowColor: string;
+}) {
+  return (
+    <motion.div
+      initial={{ scale: 0.8, opacity: 0, y: 20 }}
+      animate={{ scale: 1, opacity: 1, y: 0 }}
+      transition={{ delay, type: "spring", stiffness: 120, damping: 14 }}
+      className="flex flex-col items-center space-y-3"
+    >
+      <div className="relative">
+        <motion.div
+          className={`w-20 h-20 rounded-full ${color} flex items-center justify-center backdrop-blur-sm border border-white/10 shadow-xl relative z-10`}
+          whileHover={{ scale: 1.08 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          <Icon className="w-9 h-9 text-white" />
+        </motion.div>
+        <motion.div
+          className={`absolute inset-0 rounded-full ${glowColor} blur-xl -z-0`}
+          initial={{ opacity: 0.3, scale: 0.8 }}
+          animate={{ opacity: [0.3, 0.7, 0.3], scale: [0.8, 1.1, 0.8] }}
+          transition={{ duration: 3, repeat: Infinity, delay }}
+        />
+      </div>
+      <h3 className="text-base font-semibold text-foreground">{label}</h3>
+      <p className="text-xs text-muted-foreground text-center max-w-[120px] leading-relaxed">
+        {desc}
+      </p>
+    </motion.div>
+  );
+}
 
 export function HeroVisual() {
-  const [activeStep, setActiveStep] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
-
-  // Auto-cycle through extraction phases
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setActiveStep((prev) => (prev + 1) % 3);
-    }, 4500);
-    return () => clearInterval(interval);
-  }, []);
-
-  // Web page mock data representing unstructured content
-  const webContent = [
-    { label: "Shop Title", value: "Retro Kicks Store", type: "title" },
-    { label: "Price Tag", value: "$129.99 USD", type: "price" },
-    { label: "Stock Counter", value: "Only 3 left in stock!", type: "badge" },
-    { label: "Rating Stars", value: "★★★★☆ (4.8/5)", type: "rating" },
-  ];
-
-  // Extracted structured JSON data corresponding to steps
-  const jsonSteps = [
-    `{\n  "status": "idle",\n  "data": null\n}`,
-    `{\n  "url": "https://retrokicks.io",\n  "status": "scanning",\n  "scraping_mode": "ai_agent"\n}`,
-    `{\n  "url": "https://retrokicks.io",\n  "title": "Retro Kicks Store",\n  "price": 129.99,\n  "currency": "USD",\n  "in_stock": true,\n  "stock_count": 3,\n  "rating": 4.8,\n  "confidence_score": 0.98\n}`
-  ];
+  const mounted = useMounted();
 
   return (
-    <div 
-      className="relative w-full max-w-xl mx-auto xl:max-w-2xl h-[450px] flex items-center justify-center select-none"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
-      {/* Decorative Outer Glows */}
-      <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500/10 to-violet-500/10 rounded-3xl blur-3xl pointer-events-none" />
-      
-      {/* The Scraping Pipeline Grid */}
-      <div className="relative w-full grid grid-cols-1 md:grid-cols-11 gap-4 items-center z-10">
-        
-        {/* 1. SOURCE WIREFRAME BROWSER (4 Columns) */}
-        <motion.div 
-          className="col-span-1 md:col-span-5 h-[340px] glass rounded-xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
-          initial={{ opacity: 0, x: -50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          whileHover={{ y: -4, borderColor: "rgba(6, 182, 212, 0.3)" }}
-        >
-          {/* Browser Header */}
-          <div className="flex items-center gap-1.5 px-4 py-2.5 bg-white/5 border-b border-white/5">
-            <div className="w-2.5 h-2.5 rounded-full bg-red-500/60" />
-            <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/60" />
-            <div className="w-2.5 h-2.5 rounded-full bg-green-500/60" />
-            <div className="flex items-center gap-1.5 ml-3 bg-white/5 border border-white/5 px-2 py-0.5 rounded text-[10px] font-mono text-muted-foreground w-full max-w-[130px] overflow-hidden truncate">
-              <Globe className="w-2.5 h-2.5 text-cyan-400 shrink-0" />
-              retrokicks.io
-            </div>
-          </div>
-
-          {/* Browser Content Frame */}
-          <div className="relative flex-1 p-4 flex flex-col gap-3.5 bg-black/20 overflow-hidden text-left">
-            {/* Animated Scanner Scan-Line */}
-            <motion.div 
-              className="absolute left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-cyan-400 to-transparent z-20 shadow-[0_0_12px_#06b6d4]"
-              animate={{ 
-                top: ["5%", "95%", "5%"] 
-              }}
-              transition={{ 
-                duration: isHovered ? 2.5 : 4, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-              }}
-            />
-
-            {/* Wireframe Page Elements */}
-            <div className="h-6 w-20 rounded bg-white/5 border border-white/10" />
-            
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-lg bg-white/5 border border-white/10 shrink-0 flex items-center justify-center text-cyan-400/50">
-                👟
-              </div>
-              <div className="flex-1 flex flex-col gap-1.5">
-                <div className="h-3 w-3/4 rounded bg-white/10" />
-                <div className="h-2 w-1/2 rounded bg-white/5" />
-              </div>
-            </div>
-
-            {/* Simulated Live Web Content Lines */}
-            <div className="flex flex-col gap-2 pt-2 border-t border-white/5 flex-1 justify-around">
-              {webContent.map((item, idx) => (
-                <div key={idx} className="flex items-center justify-between text-[11px] font-sans">
-                  <span className="text-muted-foreground/70 flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white/10" />
-                    {item.label}
-                  </span>
-                  <motion.span 
-                    className={`font-semibold px-2 py-0.5 rounded bg-white/5 border border-white/10 text-foreground transition-all duration-300 ${
-                      activeStep === 2 ? "text-cyan-400 border-cyan-500/20 bg-cyan-500/5 shadow-[0_0_8px_rgba(6,182,212,0.15)]" : ""
-                    }`}
-                  >
-                    {item.value}
-                  </motion.span>
-                </div>
-              ))}
-            </div>
-
-            {/* Interactive Scanning Overlay */}
-            <AnimatePresence>
-              {activeStep === 1 && (
-                <motion.div 
-                  className="absolute inset-0 bg-cyan-500/5 backdrop-blur-[1px] flex items-center justify-center flex-col gap-2 z-10"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                >
-                  <Cpu className="w-7 h-7 text-cyan-400 animate-spin" style={{ animationDuration: "3s" }} />
-                  <span className="text-[10px] font-mono text-cyan-400 tracking-wider font-semibold animate-pulse">EXTRACTING DOM...</span>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        {/* 2. CENTRAL FLOW & AI PROCESSOR (3 Columns) */}
-        <div className="col-span-1 md:col-span-1 lg:col-span-1 flex flex-col items-center justify-center gap-4 relative min-h-[40px] md:min-h-0">
-          
-          {/* Animated Connecting Particles (SVG Flow) */}
-          <div className="absolute inset-0 pointer-events-none hidden md:block w-[140%] -left-[20%] h-[340px] top-1/2 -translate-y-1/2 overflow-visible">
-            <svg className="w-full h-full" viewBox="0 0 200 340" fill="none" xmlns="http://www.w3.org/2000/svg">
-              {/* Spline Path */}
-              <path 
-                d="M 10 170 Q 100 170 190 170" 
-                stroke="rgba(255,255,255,0.06)" 
-                strokeWidth="2" 
-                strokeDasharray="4 4"
-              />
-              {/* Flowing Laser Particle */}
-              {activeStep >= 1 && (
-                <motion.circle
-                  r="4"
-                  fill="url(#gradient-cyan-violet)"
-                  initial={{ cx: 10, cy: 170, opacity: 0 }}
-                  animate={{ 
-                    cx: [10, 100, 190], 
-                    cy: [170, 170, 170],
-                    opacity: [0, 1, 0] 
-                  }}
-                  transition={{ 
-                    duration: 1.8, 
-                    repeat: Infinity,
-                    ease: "easeInOut" 
-                  }}
-                />
-              )}
-              
-              <defs>
-                <linearGradient id="gradient-cyan-violet" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#06b6d4" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-              </defs>
-            </svg>
-          </div>
-
-          {/* Glowing AI Core Hub */}
-          <motion.div 
-            className="relative w-12 h-12 rounded-full flex items-center justify-center z-20 border border-cyan-500/30"
-            animate={{ 
-              scale: activeStep === 1 ? [1, 1.15, 1] : [1, 1.05, 1],
-              boxShadow: activeStep === 1 
-                ? ["0 0 15px rgba(6,182,212,0.2)", "0 0 35px rgba(139,92,246,0.5)", "0 0 15px rgba(6,182,212,0.2)"] 
-                : ["0 0 15px rgba(6,182,212,0.1)", "0 0 20px rgba(6,182,212,0.2)", "0 0 15px rgba(6,182,212,0.1)"]
-            }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
-          >
-            {/* Spinning Aura */}
-            <div className="absolute inset-0 rounded-full border border-dashed border-violet-400/40 animate-spin" style={{ animationDuration: "8s" }} />
-            {/* Backdrop Blur */}
-            <div className="absolute inset-0 rounded-full bg-black/60 backdrop-blur-xl -z-10" />
-            
-            <Sparkles className={`w-5 h-5 text-cyan-400 transition-colors duration-500 ${
-              activeStep === 1 ? "text-violet-400 scale-110" : ""
-            }`} />
-          </motion.div>
-
-          {/* Simple Arrow Indicator for Mobile */}
-          <ArrowRight className="w-5 h-5 text-muted-foreground/40 md:hidden animate-bounce" />
+    <div className="relative w-full max-w-xl mx-auto xl:max-w-2xl min-h-[420px] flex items-center justify-center pt-6">
+      <div className="relative w-full max-w-3xl">
+        {/* Background gradient mesh */}
+        <div className="absolute inset-0 -z-10">
+          <motion.div
+            className="absolute top-[-15%] left-[-5%] w-[450px] h-[450px] bg-cyan-500/8 rounded-full blur-3xl"
+            initial={{ y: 0 }}
+            animate={{ y: [-12, 12, -12] }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-[-15%] right-[-5%] w-[350px] h-[350px] bg-violet-500/8 rounded-full blur-3xl"
+            initial={{ y: 0 }}
+            animate={{ y: [12, -12, 12] }}
+            transition={{ duration: 7, repeat: Infinity, delay: 2, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-[30%] left-[40%] w-[200px] h-[200px] bg-emerald-500/5 rounded-full blur-3xl"
+            initial={{ y: 0 }}
+            animate={{ y: [-8, 8, -8] }}
+            transition={{ duration: 6, repeat: Infinity, delay: 1, ease: "easeInOut" }}
+          />
         </div>
 
-        {/* 3. DESTINATION JSON TERMINAL (5 Columns) */}
-        <motion.div 
-          className="col-span-1 md:col-span-5 h-[340px] glass rounded-xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
-          initial={{ opacity: 0, x: 50 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          whileHover={{ y: -4, borderColor: "rgba(139, 92, 246, 0.3)" }}
-        >
-          {/* Terminal Header */}
-          <div className="flex items-center justify-between px-4 py-2.5 bg-white/5 border-b border-white/5 font-mono text-[10px]">
-            <div className="flex items-center gap-2">
-              <Terminal className="w-3.5 h-3.5 text-violet-400" />
-              <span className="text-muted-foreground">structured_output.json</span>
+        {/* Subtle grid pattern */}
+        <div
+          className="absolute inset-0 -z-10 opacity-[0.015]"
+          style={{
+            backgroundImage: `radial-gradient(circle at 1px 1px, rgba(255,255,255,0.8) 1px, transparent 0)`,
+            backgroundSize: '32px 32px',
+          }}
+        />
+
+        <Particles count={15} />
+
+        {/* Main visualization */}
+        <div className="relative flex flex-col items-center">
+          {/* Top decorative glow orb */}
+          <motion.div
+            className="w-24 h-24 rounded-full bg-gradient-to-br from-cyan-400/10 to-violet-500/10 border border-white/5 backdrop-blur-xl flex items-center justify-center mb-8"
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: mounted ? 1 : 0, scale: mounted ? 1 : 0.5 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.div
+              className="w-12 h-12 rounded-full bg-gradient-to-br from-cyan-500/20 to-violet-500/20 flex items-center justify-center"
+              animate={{ scale: [1, 1.08, 1] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              <Cpu className="w-6 h-6 text-cyan-300" />
+            </motion.div>
+            <motion.div
+              className="absolute inset-0 rounded-full bg-cyan-400/10 blur-2xl"
+              animate={{ opacity: [0.2, 0.5, 0.2], scale: [0.9, 1.15, 0.9] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
+
+          {/* Three stages with connecting lines */}
+          <div className="flex items-center justify-center">
+            <StageCircle
+              icon={Bot}
+              color="bg-cyan-500/15"
+              label="Input"
+              desc="Enter any URL"
+              delay={0.2}
+              glowColor="bg-cyan-400/20"
+            />
+
+            <div className="hidden sm:block mx-3">
+              <FlowLine delay={0} />
             </div>
-            <div className="flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-green-500 animate-pulse" />
-              <span className="text-[9px] text-muted-foreground/80 font-semibold tracking-wide uppercase">READY</span>
+            <div className="block sm:hidden mx-1">
+              <motion.div
+                className="w-6 h-px bg-gradient-to-r from-cyan-500/40 via-transparent to-violet-500/40"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.6, duration: 0.6 }}
+              />
             </div>
+
+            <StageCircle
+              icon={Zap}
+              color="bg-violet-500/15"
+              label="Process"
+              desc="AI extraction"
+              delay={0.4}
+              glowColor="bg-violet-400/20"
+            />
+
+            <div className="hidden sm:block mx-3">
+              <FlowLine delay={0.6} />
+            </div>
+            <div className="block sm:hidden mx-1">
+              <motion.div
+                className="w-6 h-px bg-gradient-to-r from-violet-500/40 via-transparent to-emerald-500/40"
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{ delay: 0.8, duration: 0.6 }}
+              />
+            </div>
+
+            <StageCircle
+              icon={FileJson}
+              color="bg-emerald-500/15"
+              label="Output"
+              desc="Structured JSON"
+              delay={0.6}
+              glowColor="bg-emerald-400/20"
+            />
           </div>
 
-           {/* Terminal Content Frame */}
-           <div className="relative flex-1 p-4 bg-black/35 font-mono text-left text-[11px] leading-[1.4] overflow-y-auto overflow-x-hidden text-gray-300">
-             {/* Glowing Backdrop Mesh inside the terminal */}
-             <div className="absolute bottom-0 right-0 w-32 h-32 bg-violet-500/5 rounded-full blur-2xl pointer-events-none" />
-             {/* Floating decorative particles */}
-             <div className="absolute inset-0 pointer-events-none">
-               <div className="absolute top-2 left-1/2 w-2 h-2 bg-cyan-400/50 rounded-full animate-float-slow" style={{ animationDelay: "0s" }}></div>
-               <div className="absolute top-1/2 right-2 w-1.5 h-1.5 bg-violet-400/50 rounded-full animate-float-slow" style={{ animationDelay: "1.5s" }}></div>
-               <div className="absolute bottom-2 left-1/3 w-2 h-2 bg-cyan-400/30 rounded-full animate-float-slow" style={{ animationDelay: "0.8s" }}></div>
-               <div className="absolute bottom-1/3 right-1/3 w-1.5 h-1.5 bg-violet-400/30 rounded-full animate-float-slow" style={{ animationDelay: "2.2s" }}></div>
-             </div>
+          {/* Bottom info bar */}
+          <motion.div
+            className="mt-10 flex items-center gap-2 px-4 py-2 rounded-full bg-white/[0.03] border border-white/5 backdrop-blur-sm"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.6 }}
+          >
+            <Database className="w-3.5 h-3.5 text-cyan-400" />
+            <span className="text-xs text-muted-foreground">
+              <span className="text-white/60">Processing:</span>{" "}
+              <motion.span
+                className="text-cyan-300"
+                animate={{ opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                any website
+              </motion.span>
+            </span>
+            <span className="w-1 h-1 rounded-full bg-white/10 mx-1" />
+            <span className="text-xs text-emerald-400/80 flex items-center gap-1">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              JSON ready
+            </span>
+          </motion.div>
+        </div>
 
-             <AnimatePresence mode="wait">
-               <motion.pre
-                 key={activeStep}
-                 initial={{ opacity: 0, y: 10 }}
-                 animate={{ opacity: 1, y: 0 }}
-                 exit={{ opacity: 0, y: -10 }}
-                 transition={{ duration: 0.4 }}
-                 className="whitespace-pre h-full flex flex-col justify-start"
-               >
-                 {/* Dynamic colored tokens inside JSON syntax highlighting */}
-                 {activeStep === 0 && (
-                   <div>
-                     <span className="text-gray-500">{"{"}</span>
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"status"</span>: <span className="text-green-400">"idle"</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"data"</span>: <span className="text-cyan-400">null</span>
-                     <br />
-                     <span className="text-gray-500">{"}"}</span>
-                   </div>
-                 )}
-
-                 {activeStep === 1 && (
-                   <div>
-                     <span className="text-gray-500">{"{"}</span>
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"url"</span>: <span className="text-green-400">"https://retrokicks.io"</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"status"</span>: <span className="text-yellow-400">"extracting"</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"scraping_mode"</span>: <span className="text-green-400">"ai_agent"</span>
-                     <br />
-                     <span className="text-gray-500">{"}"}</span>
-                   </div>
-                 )}
-
-                 {activeStep === 2 && (
-                   <div className="text-[10px] sm:text-[11px] leading-relaxed">
-                     <span className="text-gray-500">{"{"}</span>
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"url"</span>: <span className="text-green-400">"https://retrokicks.io"</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"title"</span>: <span className="text-cyan-400">"Retro Kicks Store"</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"price"</span>: <span className="text-amber-400">129.99</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"currency"</span>: <span className="text-green-400">"USD"</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"in_stock"</span>: <span className="text-cyan-400">true</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"stock_count"</span>: <span className="text-amber-400">3</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"rating"</span>: <span className="text-amber-400">4.8</span>,
-                     <br />
-                     &nbsp;&nbsp;<span className="text-violet-400">"confidence_score"</span>: <span className="text-emerald-400">0.98</span>
-                     <br />
-                     <span className="text-gray-500">{"}"}</span>
-                   </div>
-                 )}
-               </motion.pre>
-             </AnimatePresence>
-
-             {/* Custom blink cursor to look like live typing - made responsive */}
-             <span className="absolute bottom-4 left-[50%] -translate-x-[50%] w-2 h-4 bg-cyan-400 animate-pulse" />
-           </div>
-        </motion.div>
-
+        {/* Floating decorative elements */}
+        <div className="absolute inset-0 pointer-events-none">
+          <motion.div
+            className="absolute top-[10%] left-[5%] w-3 h-3 bg-cyan-400/20 rounded-full blur-[2px]"
+            initial={{ y: 0 }}
+            animate={{ y: [-10, 10, -10] }}
+            transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-[15%] left-[8%] w-4 h-4 bg-violet-400/20 rounded-full blur-[2px]"
+            initial={{ y: 0 }}
+            animate={{ y: [8, -8, 8] }}
+            transition={{ duration: 7, repeat: Infinity, delay: 2, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute top-[20%] right-[8%] w-5 h-5 bg-emerald-400/15 rounded-full blur-[2px]"
+            initial={{ y: 0 }}
+            animate={{ y: [-7, 7, -7] }}
+            transition={{ duration: 5, repeat: Infinity, delay: 1, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute bottom-[25%] right-[3%] w-2 h-2 bg-cyan-400/30 rounded-full"
+            initial={{ y: 0 }}
+            animate={{ y: [-6, 6, -6] }}
+            transition={{ duration: 4, repeat: Infinity, delay: 0.5, ease: "easeInOut" }}
+          />
+        </div>
       </div>
     </div>
   );
