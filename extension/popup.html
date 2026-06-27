@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Scrapify</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header>
+      <h1>Scrapify</h1>
+      <span class="badge">v1.0</span>
+    </header>
+
+    <div id="url-section">
+      <input type="text" id="url-input" placeholder="Enter URL to scrape..." />
+      <button id="scrape-btn">Scrape</button>
+    </div>
+
+    <div id="actions">
+      <button id="scrape-current-btn" class="secondary">Scrape Current Page</button>
+      <button id="toggle-selector-btn" class="secondary">Pick Element (CSS)</button>
+    </div>
+
+    <div id="status-bar" class="hidden"></div>
+
+    <div id="element-css-section" class="hidden">
+      <h3>Element CSS</h3>
+      <div id="selector-path"></div>
+      <pre id="css-output"></pre>
+      <button id="copy-css-btn" class="small">Copy CSS</button>
+    </div>
+
+    <div id="results" class="hidden">
+      <div id="tabs">
+        <button class="tab active" data-tab="overview">Overview</button>
+        <button class="tab" data-tab="content">Content</button>
+        <button class="tab" data-tab="links">Links</button>
+        <button class="tab" data-tab="images">Images</button>
+        <button class="tab" data-tab="tables">Tables</button>
+        <button class="tab" data-tab="raw">Raw</button>
+      </div>
+
+      <div id="tab-content">
+        <div class="tab-panel active" id="panel-overview">
+          <h2 id="result-title"></h2>
+          <p id="result-description"></p>
+          <div id="stats"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-content">
+          <div id="headings-display"></div>
+          <div id="paragraphs-display"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-links">
+          <div id="links-list"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-images">
+          <div id="images-grid"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-tables">
+          <div id="tables-display"></div>
+        </div>
+
+        <div class="tab-panel" id="panel-raw">
+          <pre id="raw-json"></pre>
+          <button id="copy-raw-btn" class="small">Copy Raw JSON</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="loading" class="hidden">
+      <div class="spinner"></div>
+      <p>Scraping page...</p>
+    </div>
+
+    <div id="error" class="hidden">
+      <p id="error-message"></p>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

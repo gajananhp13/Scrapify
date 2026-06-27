@@ -3,33 +3,7 @@ import { scrapeWebPage } from '@/lib/scraper';
 import type { ScrapedData } from '@/lib/types';
 import { summarizeWebPage } from '@/ai/flows/summarize-web-page';
 import { classifyContentType } from '@/ai/flows/classify-content-type';
-import { Redis } from '@upstash/redis';
-
-// Initialize Redis client with proper error handling
-let redis: Redis | null = null;
-
-function getRedisClient(): Redis | null {
-  if (!redis) {
-    const url = process.env.UPSTASH_REDIS_REST_URL;
-    const token = process.env.UPSTASH_REDIS_REST_TOKEN;
-    
-    if (!url || !token) {
-      console.warn('Upstash Redis credentials are missing. Stats tracking will be disabled.');
-      return null;
-    }
-    
-    try {
-      redis = new Redis({
-        url,
-        token,
-      });
-    } catch (error) {
-      console.error('Failed to initialize Redis client:', error);
-      return null;
-    }
-  }
-  return redis;
-}
+import { incrementScrapedLinks } from '@/lib/stats-storage';
 
 // Basic URL validation
 function isValidUrl(string: string): boolean {
@@ -111,18 +85,13 @@ export async function GET(request: NextRequest) {
       aiContentType: classificationResult?.contentType,
     };
 
-    // Update total scraped links count in Upstash Redis
+    // Update total scraped links count
     const linksCount = scrapedContent.links.length;
     if (linksCount > 0) {
       try {
-        const redisClient = getRedisClient();
-        if (redisClient) {
-          await redisClient.incrby('totalScrapedLinks', linksCount);
-          await redisClient.set('lastUpdated', new Date().toISOString());
-        }
-      } catch (redisError) {
-        console.error('Error updating scraped links count in Upstash:', redisError);
-        // Continue even if stats update fails
+        await incrementScrapedLinks(linksCount);
+      } catch (statsError) {
+        console.error('Error updating scraped links count:', statsError);
       }
     }
 
