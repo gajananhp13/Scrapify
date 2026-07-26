@@ -1,138 +1,168 @@
 "use client";
 
-import Link from 'next/link';
-import { Github, Twitter, Linkedin, FileText } from 'lucide-react';
-import { Separator } from './ui/separator';
-import { motion } from 'framer-motion';
+import Link from "next/link";
+import { Bot, Github, Twitter, Linkedin, ArrowUpRight, Sparkles } from "lucide-react";
+import { motion } from "framer-motion";
+
+const NAV_LINKS = [
+  { href: "/",       label: "Home"         },
+  { href: "/chat",   label: "Scraper"      },
+  { href: "/history",label: "History"      },
+];
+
+const LEGAL_LINKS = [
+  { href: "/privacy-policy",  label: "Privacy Policy"  },
+  { href: "/terms-of-service",label: "Terms of Service"},
+];
+
+const SOCIAL_LINKS = [
+  { href: "https://github.com",   icon: Github,   label: "GitHub"   },
+  { href: "https://twitter.com",  icon: Twitter,  label: "Twitter"  },
+  { href: "https://linkedin.com", icon: Linkedin, label: "LinkedIn" },
+];
 
 export function Footer() {
-  const currentYear = new Date().getFullYear();
-
-  const socialLinks = [
-    { name: 'GitHub', href: 'https://github.com', icon: Github },
-    { name: 'Twitter', href: 'https://twitter.com', icon: Twitter },
-    { name: 'LinkedIn', href: 'https://linkedin.com', icon: Linkedin },
-  ];
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-      },
-    },
-  };
+  const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t bg-background/95 backdrop-blur-sm relative overflow-hidden">
-      {/* Subtle background decoration */}
-      <div className="absolute inset-0 -z-10">
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
+    <footer
+      className="relative border-t overflow-hidden"
+      style={{ borderColor: "hsl(var(--border)/0.5)" }}
+    >
+      {/* Background */}
+      <div
+        className="absolute inset-0 -z-10"
+        style={{
+          background: "linear-gradient(to top, hsl(var(--card)/0.6), transparent)",
+          backdropFilter: "blur(12px)",
+        }}
+      />
+      <div
+        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[600px] h-40 -z-10 pointer-events-none"
+        style={{
+          background: "radial-gradient(ellipse, hsl(var(--primary)/0.06), transparent 70%)",
+          filter: "blur(40px)",
+        }}
+        aria-hidden="true"
+      />
 
-      <div className="container py-8 md:py-12 relative z-10">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-50px" }}
-          variants={containerVariants}
-          className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 mb-8"
-        >
-          <motion.div variants={itemVariants}>
-            <h3 className="text-lg font-semibold text-primary mb-3 bg-gradient-to-r from-primary to-primary/80 bg-clip-text text-transparent">
-              Scrapify
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Intelligent web scraping chatbot tool. Effortlessly extract, summarize, and classify web content with AI.
+      <div className="container mx-auto max-w-6xl px-4 py-12">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 md:gap-8 mb-10">
+
+          {/* Brand column */}
+          <div className="md:col-span-2">
+            <Link href="/" className="inline-flex items-center gap-2.5 mb-4 group">
+              <div
+                className="w-8 h-8 rounded-xl flex items-center justify-center"
+                style={{
+                  background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--violet)/0.9) 100%)",
+                  boxShadow: "0 2px 12px hsl(var(--primary)/0.35)",
+                }}
+              >
+                <Bot className="w-4 h-4 text-white" />
+              </div>
+              <span className="font-display font-bold text-base text-foreground group-hover:text-primary transition-colors">
+                Scrapify
+              </span>
+            </Link>
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
+              Intelligent web scraping powered by AI. Extract, summarize, and export structured data
+              from any public URL — instantly.
             </p>
-          </motion.div>
 
-          <motion.div variants={itemVariants}>
-            <h3 className="text-lg font-semibold mb-3">Quick Links</h3>
-            <ul className="space-y-2 text-sm">
-              {[
-                { href: "/", label: "Home" },
-                { href: "/chat", label: "Chat Scraper" },
-                { href: "/history", label: "History" },
-              ].map((link) => (
+            {/* Feature pills */}
+            <div className="flex flex-wrap gap-2 mt-5">
+              {["AI Summaries", "JSON Export", "No signup"].map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs px-2.5 py-1 rounded-lg border"
+                  style={{
+                    background: "hsl(var(--muted)/0.5)",
+                    borderColor: "hsl(var(--border)/0.5)",
+                    color: "hsl(var(--muted-foreground))",
+                  }}
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Navigation */}
+          <div>
+            <p className="label-sm mb-4">Navigation</p>
+            <ul className="space-y-2.5">
+              {NAV_LINKS.map((link) => (
                 <li key={link.href}>
                   <Link
                     href={link.href}
-                    className="text-muted-foreground hover:text-primary transition-colors duration-300 inline-block hover:translate-x-1 transform"
+                    className="text-sm text-muted-foreground hover:text-foreground transition-colors duration-200 flex items-center gap-1 group"
                   >
                     {link.label}
+                    <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-0.5 translate-x-0 group-hover:opacity-60 group-hover:-translate-y-0.5 transition-all" />
                   </Link>
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </div>
 
-          <motion.div variants={itemVariants}>
-            <h3 className="text-lg font-semibold mb-3">Connect With Us</h3>
-            <div className="flex space-x-4">
-              {socialLinks.map((social, index) => (
-                <motion.div
-                  key={social.name}
-                  initial={{ opacity: 0, scale: 0 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.3, delay: index * 0.1 }}
-                  whileHover={{ scale: 1.1, rotate: [0, -10, 10, -10, 0] }}
-                  whileTap={{ scale: 0.9 }}
+          {/* Connect */}
+          <div>
+            <p className="label-sm mb-4">Connect</p>
+            <div className="flex gap-2 mb-6">
+              {SOCIAL_LINKS.map(({ href, icon: Icon, label }) => (
+                <motion.a
+                  key={label}
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={label}
+                  className="w-9 h-9 rounded-xl flex items-center justify-center border text-muted-foreground hover:text-foreground transition-colors"
+                  style={{ borderColor: "hsl(var(--border)/0.6)", background: "hsl(var(--muted)/0.3)" }}
+                  whileHover={{ scale: 1.08, y: -1 }}
+                  whileTap={{ scale: 0.94 }}
                 >
-                  <Link
-                    href={social.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary transition-colors duration-300 block p-2 rounded-md hover:bg-accent/10"
-                    aria-label={social.name}
-                  >
-                    <social.icon className="h-6 w-6" />
-                  </Link>
-                </motion.div>
+                  <Icon className="w-4 h-4" />
+                </motion.a>
               ))}
             </div>
-          </motion.div>
-        </motion.div>
-
-        <Separator className="my-6 opacity-50" />
-        
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col sm:flex-row justify-between items-center text-sm text-muted-foreground"
-        >
-          <p>&copy; {currentYear} Scrapify. All rights reserved.</p>
-          <div className="flex space-x-4 mt-4 sm:mt-0">
-            <Link
-              href="/privacy-policy"
-              className="hover:text-primary transition-colors duration-300"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="hover:text-primary transition-colors duration-300"
-            >
-              Terms of Service
+            <Link href="/chat">
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.97 }}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold text-white"
+                style={{
+                  background: "linear-gradient(135deg, hsl(var(--primary)) 0%, hsl(var(--violet)/0.9) 100%)",
+                  boxShadow: "0 2px 16px hsl(var(--primary)/0.3)",
+                }}
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                Try Scrapify
+              </motion.div>
             </Link>
           </div>
-        </motion.div>
+        </div>
+
+        {/* Divider */}
+        <div className="divider-gradient mb-6" />
+
+        {/* Bottom bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <p className="text-xs text-muted-foreground">
+            © {year} Scrapify. Built with Next.js, Genkit AI &amp; Cheerio.
+          </p>
+          <div className="flex items-center gap-5">
+            {LEGAL_LINKS.map((link) => (
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+        </div>
       </div>
     </footer>
   );
