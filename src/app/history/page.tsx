@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import useLocalStorage from "@/hooks/use-local-storage";
 import type { ScrapeHistoryItem } from "@/lib/types";
 import { Button } from "@/components/ui/button";
-import { ExternalLink, Trash2, FileText, Eye, History, Globe, Calendar, Brain, Tag, Search, X } from "lucide-react";
+import { ExternalLink, Trash2, FileText, History, Globe, Calendar, Brain, Tag, Search, X } from "lucide-react";
 import Link from "next/link";
 import {
   AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
@@ -139,10 +139,10 @@ function HistoryCard({
                 <Button
                   variant="ghost"
                   size="sm"
-                  className="h-8 w-8 p-0 rounded-xl hover:bg-primary/10 hover:text-primary text-muted-foreground transition-colors"
+                  className="h-8 px-3 rounded-xl bg-transparent hover:bg-primary/10 text-muted-foreground hover:text-primary transition-colors text-xs font-semibold"
                   title="View details"
                 >
-                  <Eye className="w-4 h-4" />
+                  View
                 </Button>
               </DialogTrigger>
               <DialogContent className="max-w-4xl max-h-[92vh] border-border/60"

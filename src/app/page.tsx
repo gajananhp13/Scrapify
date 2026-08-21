@@ -7,7 +7,6 @@ import {
   Bot, Star, Terminal, Database
 } from "lucide-react";
 import Link from "next/link";
-import { StatsDisplay } from "@/components/stats-display";
 import { HeroVisual } from "@/components/hero-visual";
 import { motion } from "framer-motion";
 
@@ -234,25 +233,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ────────────────────────────────────────
-          STATS BAR
-      ──────────────────────────────────────── */}
-      <section className="relative px-4 pb-24">
-        <div className="content-container mx-auto max-w-5xl">
-          <motion.div
-            {...fadeUp(0)}
-            className="rounded-3xl border overflow-hidden"
-            style={{
-              background: "linear-gradient(135deg, hsl(var(--card)/0.7) 0%, hsl(var(--card)/0.4) 100%)",
-              backdropFilter: "blur(24px)",
-              borderColor: "hsl(var(--border)/0.7)",
-              boxShadow: "0 16px 60px -12px hsl(226 32% 5%/0.5), inset 0 1px 0 hsl(210 40% 98%/0.04)",
-            }}
-          >
-            <StatsDisplay />
-          </motion.div>
-        </div>
-      </section>
+
 
       {/* ────────────────────────────────────────
           CODE PREVIEW

@@ -98,18 +98,6 @@ export function AppNavbar() {
 
         {/* Right side */}
         <div className="flex items-center gap-2 pr-1">
-          <Link href="/chat" className="hidden md:block">
-            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
-              <Button
-                size="sm"
-                className="h-8 px-4 text-xs font-semibold rounded-xl bg-gradient-to-br from-primary to-[hsl(var(--violet)/0.9)] border-0 shadow-[0_2px_12px_hsl(var(--primary)/0.35)] hover:shadow-[0_4px_20px_hsl(var(--primary)/0.5)] transition-shadow"
-              >
-                <Sparkles className="h-3 w-3 mr-1.5" />
-                Try Free
-              </Button>
-            </motion.div>
-          </Link>
-
           {/* Mobile hamburger */}
           <div className="md:hidden">
             <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
